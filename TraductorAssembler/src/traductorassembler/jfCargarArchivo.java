@@ -127,6 +127,7 @@ public class jfCargarArchivo extends javax.swing.JFrame {
         // TODO add your handling code here:
         if(txtArchivo.getText() != ""){
             Traductor traductor = new Traductor(Lector.Obtener(txtArchivo.getText()));
+            String hola=traductor.traducir();
         }
         else{
             JOptionPane.showMessageDialog(null,"Debe seleccionar un archivo .asm");

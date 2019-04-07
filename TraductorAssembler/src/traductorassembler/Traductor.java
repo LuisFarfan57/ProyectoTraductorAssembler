@@ -19,9 +19,10 @@ public class Traductor {
     Hashtable<String, Integer> Simbolos = new Hashtable<String, Integer>();
     Hashtable<String, Integer> Etiquetas = new Hashtable<String, Integer>();
     List<String> codigo = new LinkedList<String>();
+    Hashtable<Integer, String> Codigo = new Hashtable<Integer, String>();
     List<String> codigoSinEtiquetas = new LinkedList<String>();
     
-    public Traductor(String codigo){        
+    public Traductor(String codigo){  
         for (int i = 0; i < 16; i++) {
             Simbolos.put("R" + i, i);
         }        
@@ -37,13 +38,21 @@ public class Traductor {
         Simbolos.put("THIS", 3);
         
         String[] codigoTemp = codigo.split("\n");
+        int posEtiqueta=-2;
+        int posInstruccion=0;
         for (int i = 0; i < codigoTemp.length; i++) {
             String[] instruccion = codigoTemp[i].split("//");
             if(instruccion[0] != null){
                 this.codigo.add(instruccion[0].trim());
                 
-                if(!instruccion[0].startsWith("("))
-                    this.codigoSinEtiquetas.add(instruccion[0].trim());
+                if(!instruccion[0].startsWith("(")){
+                    this.codigoSinEtiquetas.add(instruccion[0].trim()); //lista sin etiquetas
+                   
+                    
+                }
+                else{
+                     Etiquetas.put(instruccion[0].trim(), (codigoSinEtiquetas.size()+1)); //ingresa el simbolo y la posicion es el tamaño de la lista pues el tamaño = sig posicion de codigo
+                }
             }                
         }
     }
@@ -65,7 +74,7 @@ public class Traductor {
         String binario = "0";
         String numero = linea.substring(1);
         String tempBinario = "";
-        
+        Integer valor=0;
         if(isInteger(numero)){
             tempBinario = Integer.toBinaryString(Integer.parseInt(numero));
                         
@@ -75,8 +84,24 @@ public class Traductor {
             
             binario = tempBinario;            
         }
-        else{
+        else if((valor=Simbolos.get(linea))!=null){
+            numero=valor.toString();
+            tempBinario = Integer.toBinaryString(Integer.parseInt(numero));                      
+            for (int i = tempBinario.length() - 1; i < 15; i++) {
+                tempBinario = "0" + tempBinario;
+            }
             
+            binario = tempBinario;
+           
+        }
+        else if((valor=Etiquetas.get(linea))!=null){
+            numero=valor.toString();
+            tempBinario = Integer.toBinaryString(Integer.parseInt(numero));                      
+            for (int i = tempBinario.length() - 1; i < 15; i++) {
+                tempBinario = "0" + tempBinario;
+            }
+            
+            binario = tempBinario;
         }
         
         return binario;
