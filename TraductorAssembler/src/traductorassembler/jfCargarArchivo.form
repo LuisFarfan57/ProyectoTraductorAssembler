@@ -101,6 +101,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtArchivo">
       <Properties>
+        <Property name="editable" type="boolean" value="false"/>
         <Property name="text" type="java.lang.String" value="jTextField3"/>
       </Properties>
     </Component>

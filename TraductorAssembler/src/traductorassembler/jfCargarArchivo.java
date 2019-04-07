@@ -5,8 +5,10 @@
  */
 package traductorassembler;
 
+import TraductorAssembler.Lector;
 import java.io.File;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -57,6 +59,7 @@ public class jfCargarArchivo extends javax.swing.JFrame {
             }
         });
 
+        txtArchivo.setEditable(false);
         txtArchivo.setText("jTextField3");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -107,13 +110,13 @@ public class jfCargarArchivo extends javax.swing.JFrame {
         // TODO add your handling code here:
         JFileChooser dialogo = new JFileChooser();
         FileNameExtensionFilter filtro = new FileNameExtensionFilter("Assembler", "asm");
-        File ficheroImagen;
+        File fichero;
         String rutaArchivo;
         dialogo.setFileFilter(filtro);
         int valor = dialogo.showOpenDialog(this);
         if (valor == JFileChooser.APPROVE_OPTION) {
-            ficheroImagen = dialogo.getSelectedFile();
-            rutaArchivo = ficheroImagen.getPath();
+            fichero = dialogo.getSelectedFile();
+            rutaArchivo = fichero.getPath();
 
                 
             txtArchivo.setText(rutaArchivo);            
@@ -122,6 +125,12 @@ public class jfCargarArchivo extends javax.swing.JFrame {
 
     private void btnTraducirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTraducirActionPerformed
         // TODO add your handling code here:
+        if(txtArchivo.getText() != ""){
+            Traductor traductor = new Traductor(Lector.Obtener(txtArchivo.getText()));
+        }
+        else{
+            JOptionPane.showMessageDialog(null,"Debe seleccionar un archivo .asm");
+        }
     }//GEN-LAST:event_btnTraducirActionPerformed
 
     /**

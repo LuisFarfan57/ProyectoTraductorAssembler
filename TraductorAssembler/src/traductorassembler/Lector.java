@@ -24,8 +24,7 @@ public class Lector {
         File Archivo=new File(strPath);
         String cadena="";
         if(Archivo.exists()==true)
-        {
-            Traductor traductor = new Traductor();
+        {            
             FileReader LecturaArchivo;
             try {
                 LecturaArchivo = new FileReader(Archivo);
@@ -34,7 +33,7 @@ public class Lector {
                 try {                    
                     while((Linea=LeerArchivo.readLine()) != null)
                     {                        
-                        traductor.traducir(Linea);
+                        cadena += Linea + '\n';
                     }                   
                     LecturaArchivo.close();
                     LeerArchivo.close();                                        
@@ -51,6 +50,5 @@ public class Lector {
         {
             return "No existe el archivo";            
         }
-}
-
+    }        
 }
