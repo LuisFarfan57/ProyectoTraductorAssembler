@@ -19,7 +19,6 @@ public class Traductor {
     Hashtable<String, Integer> Simbolos = new Hashtable<String, Integer>();
     Hashtable<String, Integer> Etiquetas = new Hashtable<String, Integer>();
     List<String> codigo = new LinkedList<String>();
-    Hashtable<Integer, String> Codigo = new Hashtable<Integer, String>();
     List<String> codigoSinEtiquetas = new LinkedList<String>();
     
     public Traductor(String codigo){  
@@ -36,22 +35,23 @@ public class Traductor {
         Simbolos.put("THAT", 4);
         Simbolos.put("LOOP", 4);
         Simbolos.put("THIS", 3);
-        
+        String instruccion="";
         String[] codigoTemp = codigo.split("\n");
-        int posEtiqueta=-2;
-        int posInstruccion=0;
         for (int i = 0; i < codigoTemp.length; i++) {
-            String[] instruccion = codigoTemp[i].split("//");
-            if(instruccion[0] != null){
-                this.codigo.add(instruccion[0].trim());
-                
-                if(!instruccion[0].startsWith("(")){
-                    this.codigoSinEtiquetas.add(instruccion[0].trim()); //lista sin etiquetas
-                   
-                    
+              int contador = 0;    
+            while(codigoTemp[i].charAt(contador) != '/' || codigoTemp[i].charAt(contador) != '\u0000'){
+                instruccion += codigoTemp[i].charAt(contador);
+                contador++;
+            }
+            if(instruccion!=""){
+                if(!instruccion.startsWith("(")){
+                    codigoSinEtiquetas.add(instruccion.trim());   
+                    if(codigoSinEtiquetas.get(i).equals("")){
+                        codigoSinEtiquetas.remove(i);
+                    }
                 }
                 else{
-                     Etiquetas.put(instruccion[0].trim(), (codigoSinEtiquetas.size()+1)); //ingresa el simbolo y la posicion es el tamaño de la lista pues el tamaño = sig posicion de codigo
+                     Etiquetas.put(instruccion.trim(), (codigoSinEtiquetas.size()+1));  
                 }
             }                
         }
