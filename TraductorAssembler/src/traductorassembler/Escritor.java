@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package proyectomeia;
+package traductorassembler;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,30 +18,28 @@ import java.io.RandomAccessFile;
  */
 public class Escritor {
     public static boolean Escribir(String strPath,String strContenido)
-    {
-        File Archivo = new File(strPath);
-         String[] spli=strContenido.split("\n");
+    {        
         try
         {
+            File Archivo = new File(strPath);        
+            
             if(!Archivo.exists()){
-            Archivo.createNewFile();
+                Archivo.createNewFile();
             }
-            else{
+            else{                
                 Archivo.delete();
                 Archivo.createNewFile();
             }
-                FileWriter Escribir = new FileWriter(Archivo,true);
-                BufferedWriter bw = new BufferedWriter(Escribir);
-                for (int i = 0; i < spli.length; i++) {
-                bw.write(spli[i]);
-                bw.newLine();
-            }               
-
+            
+            FileWriter Escribir = new FileWriter(Archivo,true);
+            BufferedWriter bw = new BufferedWriter(Escribir);
+            
+            bw.write(strContenido);                
+                                            
+            bw.close();
+            Escribir.close();
                 
-                bw.close();
-                Escribir.close();
-                
-                return true;
+            return true;
         }
         catch(IOException ex)
         {

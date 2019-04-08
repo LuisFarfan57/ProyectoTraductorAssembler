@@ -7,6 +7,7 @@ package traductorassembler;
 
 import TraductorAssembler.Lector;
 import java.io.File;
+import java.io.FileReader;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -105,29 +106,38 @@ public class jfCargarArchivo extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    String nombreArchivo = "";
     private void btnCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarActionPerformed
         // TODO add your handling code here:
         JFileChooser dialogo = new JFileChooser();
-        FileNameExtensionFilter filtro = new FileNameExtensionFilter("Assembler", "asm");
+        FileNameExtensionFilter filtro = new FileNameExtensionFilter(".asm", "asm");
         File fichero;
         String rutaArchivo;
         dialogo.setFileFilter(filtro);
         int valor = dialogo.showOpenDialog(this);
         if (valor == JFileChooser.APPROVE_OPTION) {
             fichero = dialogo.getSelectedFile();
-            rutaArchivo = fichero.getPath();
-
-                
-            txtArchivo.setText(rutaArchivo);            
+            rutaArchivo = fichero.getPath();               
+            txtArchivo.setText(rutaArchivo);                        
+            nombreArchivo = fichero.getName().split("\\.")[0];
         }
     }//GEN-LAST:event_btnCargarActionPerformed
 
     private void btnTraducirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTraducirActionPerformed
         // TODO add your handling code here:
         if(txtArchivo.getText() != ""){
-            Traductor traductor = new Traductor(Lector.Obtener(txtArchivo.getText()));
-            String hola=traductor.traducir();
+            String contenido = Lector.Obtener(txtArchivo.getText());
+            txtCodigoAsm.setText(contenido);
+            Traductor traductor = new Traductor(contenido);
+            String traduccion = traductor.traducir();
+            
+            if(traduccion != "ERROR"){
+                escribirArchivo(traduccion);
+            }
+            else{
+                JOptionPane.showMessageDialog(null,"Error en la traducción");
+            }        
         }
         else{
             JOptionPane.showMessageDialog(null,"Debe seleccionar un archivo .asm");
@@ -167,6 +177,27 @@ public class jfCargarArchivo extends javax.swing.JFrame {
                 new jfCargarArchivo().setVisible(true);
             }
         });
+    }
+    
+    void escribirArchivo(String contenido){
+        
+        JFileChooser fc = new JFileChooser();     
+        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        
+        int seleccion = fc.showOpenDialog(this);
+        
+        if(seleccion == JFileChooser.APPROVE_OPTION){     
+            File fichero=fc.getSelectedFile();
+            
+            if(Escritor.Escribir(fichero.getAbsolutePath() + "\\" + nombreArchivo + ".hack", contenido)){
+                JOptionPane.showMessageDialog(null,"Archivo traducido correctamente");
+            }
+            else{
+                JOptionPane.showMessageDialog(null,"Error en la traduccion");
+            }
+        }
+        
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
