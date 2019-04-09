@@ -35,10 +35,12 @@ public class jfCargarArchivo extends javax.swing.JFrame {
     private void initComponents() {
 
         btnCargar = new javax.swing.JButton();
-        txtBinario = new javax.swing.JTextField();
-        txtCodigoAsm = new javax.swing.JTextField();
         btnTraducir = new javax.swing.JButton();
         txtArchivo = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtCodigoAsm = new javax.swing.JList<>();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtCodigoBinario = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -49,10 +51,6 @@ public class jfCargarArchivo extends javax.swing.JFrame {
             }
         });
 
-        txtBinario.setText("jTextField1");
-
-        txtCodigoAsm.setText("jTextField1");
-
         btnTraducir.setText("Traducir");
         btnTraducir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -61,30 +59,39 @@ public class jfCargarArchivo extends javax.swing.JFrame {
         });
 
         txtArchivo.setEditable(false);
-        txtArchivo.setText("jTextField3");
+
+        txtCodigoAsm.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane1.setViewportView(txtCodigoAsm);
+
+        txtCodigoBinario.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane2.setViewportView(txtCodigoBinario);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(305, Short.MAX_VALUE)
-                        .addComponent(txtBinario, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane2))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(btnCargar, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtArchivo)
+                        .addComponent(txtArchivo, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnTraducir)))
                 .addContainerGap())
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(20, 20, 20)
-                    .addComponent(txtCodigoAsm, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(328, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -95,13 +102,10 @@ public class jfCargarArchivo extends javax.swing.JFrame {
                     .addComponent(btnTraducir)
                     .addComponent(txtArchivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtBinario, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE))
                 .addContainerGap())
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(68, 68, 68)
-                    .addComponent(txtCodigoAsm, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
-                    .addContainerGap()))
         );
 
         pack();
@@ -127,13 +131,15 @@ public class jfCargarArchivo extends javax.swing.JFrame {
     private void btnTraducirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTraducirActionPerformed
         // TODO add your handling code here:
         if(txtArchivo.getText() != ""){
-            String contenido = Lector.Obtener(txtArchivo.getText());
-            txtCodigoAsm.setText(contenido);
+            String contenido = Lector.Obtener(txtArchivo.getText());            
+            txtCodigoAsm.setListData(contenido.split("\n"));            
             Traductor traductor = new Traductor(contenido);
             String traduccion = traductor.traducir();
             
             if(traduccion != "ERROR"){
+                txtCodigoBinario.setListData(traduccion.split("\n"));
                 escribirArchivo(traduccion);
+                
             }
             else{
                 JOptionPane.showMessageDialog(null,"Error en la traducción");
@@ -181,6 +187,7 @@ public class jfCargarArchivo extends javax.swing.JFrame {
     
     void escribirArchivo(String contenido){
         
+        JOptionPane.showMessageDialog(null,"Seleccione donde quiere guardar el archivo .hack");
         JFileChooser fc = new JFileChooser();     
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         
@@ -203,8 +210,10 @@ public class jfCargarArchivo extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCargar;
     private javax.swing.JButton btnTraducir;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField txtArchivo;
-    private javax.swing.JTextField txtBinario;
-    private javax.swing.JTextField txtCodigoAsm;
+    private javax.swing.JList<String> txtCodigoAsm;
+    private javax.swing.JList<String> txtCodigoBinario;
     // End of variables declaration//GEN-END:variables
 }
